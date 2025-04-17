@@ -1,166 +1,36 @@
-# MTTD Benchmarking Framework
+# MTTD Benchmarking Framework 🔍
 
-A standardized methodology for measuring and comparing Mean Time to Detect (MTTD) across different commercial cloud security services.
+*A research-oriented framework for standardized measurement and comparison of Mean Time to Detect (MTTD) across commercial cloud security services.* ☁️
 
 ## Overview
 
-The MTTD Benchmarking Framework provides organizations with a repeatable, objective way to evaluate the detection capabilities of cloud security services. The framework simulates realistic attack scenarios using the MITRE ATT&CK framework, monitors security services for alerts, and calculates metrics like MTTD, detection rates, and false positive rates.
+The **MTTD Benchmarking Framework** addresses a critical gap in cloud security: the **lack of standardized methods** to objectively evaluate and compare detection capabilities across security services. When organizations migrate to the cloud, they need empirical data to make informed security decisions, but consistent benchmarking methodologies have been missing—until now.
 
-## Key Features
+Our framework provides:
 
-- **Standardized Testing**: Consistent methodology for comparing security services
-- **Realistic Attack Simulation**: Based on MITRE ATT&CK framework and real-world attack patterns
-- **Multi-Cloud Support**: Works with AWS, Azure, and GCP security services
-- **Comprehensive Metrics**: Measures MTTD, detection rates, false positives, and alert distribution
-- **Detailed Reporting**: Generates comparative reports and visualizations
-- **Extensible Architecture**: Easy to add new security services and attack techniques
+- A standardized approach for measuring MTTD across AWS, Azure, and GCP security services
+- Realistic attack simulations based on the MITRE ATT&CK framework
+- Comprehensive metrics including detection rates and false positive rates
+- Platform-agnostic evaluation that enables direct comparison of service performance
 
-## Architecture
+This repository contains our implementation, documentation, and research findings as we continue to develop and refine this methodology. We'll update it as our research progresses! 🚀
 
-The framework consists of six core modules:
+The MTTD Benchmarking Framework employs a modular architecture to systematically evaluate security service detection capabilities:
 
-1. **Threat Simulation Engine**: Executes attack scenarios across cloud platforms
-2. **Detection Monitoring System**: Collects security events from various services
-3. **Metric Collection & Analysis**: Processes event data to calculate MTTD and other metrics
-4. **Reporting & Visualization**: Generates reports and visual comparisons
-5. **Test Scenario Manager**: Orchestrates test execution and manages environments
-6. **Service Integration Layer**: Provides standardized interfaces to various security services
+- **Threat Simulation Engine**: Executes controlled attack scenarios across platforms
+- **Detection Monitoring System**: Collects security events from various services
+- **Metric Collection & Analysis**: Processes event data to calculate MTTD and other metrics
+- **Reporting & Visualization**: Generates comparative reports and visualizations
+- **Test Scenario Manager**: Orchestrates test execution and manages environments
+- **Service Integration Layer**: Provides standardized interfaces to various security services
 
-## Installation
+Our meta-level analysis framework combines these components to provide objective comparisons while adapting to the unique characteristics of each security service.
 
-### Prerequisites
+## Read More
 
-- Python 3.9+
-- Access to cloud platform accounts (AWS, Azure, and/or GCP)
-- Cloud security services to test (GuardDuty, Security Hub, Sentinel, etc.)
-- Required Python packages (see requirements.txt)
+For detailed information about the framework architecture, methodology, and implementation, check our documentation:
 
-### Setup
-
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/mttd-benchmarking.git
-   cd mttd-benchmarking
-   ```
-
-2. Install required packages:
-   ```
-   pip install -r requirements.txt
-   ```
-
-3. Configure cloud credentials:
-   - For AWS, configure credentials using AWS CLI or environment variables
-   - For Azure, set up authentication using az CLI or environment variables
-   - For GCP, set up authentication using gcloud CLI or service account keys
-
-4. Update the configuration file:
-   ```
-   cp config/config.example.json config/config.json
-   ```
-   Edit `config.json` with your cloud environment details and preferences.
-
-## Usage
-
-### Command Line Interface
-
-The framework provides a command-line interface for running tests and generating reports:
-
-#### List Available Scenarios
-
-```
-python -m src.cli list
-```
-
-#### Execute a Single Scenario
-
-```
-python -m src.cli execute --scenario-id aws-privilege-escalation-001
-```
-
-#### Run a Benchmark Across Multiple Services
-
-```
-python -m src.cli benchmark --scenarios aws-privilege-escalation-001,aws-data-exfiltration-001 --services aws_guardduty,aws_securityhub,third_party_service_1
-```
-
-### Web Interface
-
-The framework also provides a web-based UI for easier interaction:
-
-1. Start the web server:
-   ```
-   python -m src.web_ui.app
-   ```
-
-2. Access the interface at `http://localhost:5000`
-
-## Creating Custom Scenarios
-
-Custom attack scenarios can be created by defining JSON scenario files in the `config/scenarios` directory. Each scenario must include:
-
-- **Platform details**: Which cloud platform and region to use
-- **Environment configuration**: Resources to create for the test
-- **Attack steps**: Sequence of MITRE ATT&CK techniques to execute
-- **Expected alerts**: Alerts that should be generated by security services
-
-Example scenario structure:
-
-```json
-{
-  "id": "custom-scenario-001",
-  "name": "Custom Attack Scenario",
-  "description": "Description of the scenario",
-  "platform": {
-    "name": "aws",
-    "service_name": "aws_guardduty",
-    "region": "us-west-2"
-  },
-  "environment_config": {
-    "resources": {
-      "ec2_instance": [{ "instance_type": "t2.micro" }]
-    }
-  },
-  "steps": [
-    {
-      "name": "First Step",
-      "technique_id": "T1078",
-      "parameters": { "user_name": "test-user" },
-      "expected_indicators": ["aws-api-call"]
-    }
-  ],
-  "expected_alerts": [
-    {
-      "service": "aws_guardduty",
-      "finding_type": "UnauthorizedAccess:IAMUser/MaliciousIPCaller",
-      "severity": "MEDIUM",
-      "time_to_detect_range": [60, 300]
-    }
-  ]
-}
-```
-
-## Adding New Security Services
-
-The framework can be extended to support additional security services by:
-
-1. Creating a new client implementation in the `src/service_integration` directory
-2. Updating the service factory to include the new service
-3. Adding the service configuration to `config.json`
-
-## Reports and Metrics
-
-The framework generates several types of reports:
-
-- **JSON reports**: Detailed metrics and benchmark data
-- **CSV reports**: Tabular data for import into spreadsheets
-- **Visualization data**: For rendering charts and graphs
-
-Key metrics include:
-
-- **Mean Time to Detect (MTTD)**: Average time between attack execution and detection
-- **Detection Rate**: Percentage of attack indicators that were detected
-- **False Positive Rate**: Proportion of alerts that didn't correspond to actual attacks
-- **Severity Distribution**: Breakdown of alerts by severity level
+📄 **Documentation:** [MTTD Benchmarking Framework Documentation](https://github.com/yourusername/mttd-benchmarking/docs/index.md)
 
 ## Research Applications
 
@@ -172,13 +42,110 @@ This framework enables several important cybersecurity research directions:
 4. Measuring how MTTD varies across different attack techniques
 5. Evaluating the impact of security service configuration on detection capabilities
 
-## Contributing
+## Key Features
 
-Contributions are welcome! Please feel free to submit pull requests or open issues to improve the framework.
+- **Standardized Testing**: Consistent methodology for comparing security services 📊
+- **Realistic Attack Simulation**: Based on MITRE ATT&CK framework and real-world patterns 🛡️
+- **Multi-Cloud Support**: Works with AWS, Azure, and GCP security services ☁️
+- **Comprehensive Metrics**: Measures MTTD, detection rates, false positives, and more 📈
+- **Advanced Visualization**: Interactive charts and reports for easy analysis 📉
+- **Extensible Architecture**: Easy to add new security services and attack techniques 🧩
+- **Objective Comparison**: Framework for evidence-based security decisions 🔬
 
-## License
+## Installation
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+### Prerequisites
+
+- Python 3.9 or higher
+- Access to cloud platform accounts (AWS, Azure, and/or GCP)
+- Cloud security services to test (GuardDuty, Security Hub, Sentinel, etc.)
+- Appropriate permissions to create and manage cloud resources
+
+### Setup
+
+```bash
+# Install from PyPI
+pip install mttd-benchmarking
+
+# Or install from source
+git clone https://github.com/yourusername/mttd-benchmarking.git
+cd mttd-benchmarking
+pip install -e .
+```
+
+For detailed installation instructions, see the [Installation Guide](installation.md).
+
+## Usage
+
+### Command Line Interface
+
+```bash
+# List available scenarios
+mttd-benchmark list
+
+# Execute a specific scenario
+mttd-benchmark execute --scenario-id aws-privilege-escalation-001
+
+# Run a benchmark across multiple services
+mttd-benchmark benchmark --scenarios aws-privilege-escalation-001,aws-data-exfiltration-001 --services aws_guardduty,aws_securityhub
+
+# Generate a report from benchmark results
+mttd-benchmark report --report-id 123e4567-e89b-12d3-a456-426614174000 --format html
+```
+
+### Web Interface
+
+The framework also provides a web-based UI for easier interaction:
+
+```bash
+# Start the web interface
+python -m mttd_benchmarking.web.app
+```
+
+Then access it at http://localhost:5000
+
+## Attack Scenarios
+
+The framework includes several pre-defined scenarios:
+
+- **AWS Privilege Escalation**: Simulates an attacker gaining initial access and escalating privileges
+- **AWS Data Exfiltration**: Simulates access and exfiltration of sensitive data from S3 buckets
+- **Azure Lateral Movement**: Simulates gaining initial access and moving laterally through Azure resources
+- **GCP Cryptomining**: Simulates compromising GCP resources to deploy cryptomining workloads
+
+These scenarios are designed to test real-world attack patterns while remaining non-destructive and controlled.
+
+## Project Structure
+
+```
+mttd-benchmarking/
+├── cli/                  # Command line interface
+├── config/               # Configuration files and scenario definitions
+├── core/                 # Core types and utilities
+├── detection/            # Detection monitoring and correlation
+├── docs/                 # Documentation
+├── metrics/              # Metric collection and analysis
+├── reporting/            # Report generation and visualizations
+├── scenario/             # Scenario management
+├── services/             # Service integration layer
+│   ├── aws/              # AWS service clients
+│   ├── azure/            # Azure service clients
+│   └── gcp/              # GCP service clients
+├── simulation/           # Simulation engine and techniques
+│   └── techniques/       # Attack technique implementations
+├── tests/                # Unit and integration tests
+└── web/                  # Web UI
+```
+
+## Extending the Framework
+
+The framework is designed to be extensible in several ways:
+
+1. **Add New Attack Techniques**: Implement new MITRE ATT&CK techniques in the appropriate platform modules
+2. **Support New Security Services**: Create new security service clients in the services directory
+3. **Develop Custom Scenarios**: Create new JSON scenario files to test specific attack patterns
+4. **Enhance Visualization**: Add new visualization types in the reporting module
+5. **Expand Cloud Support**: Extend the framework to additional cloud providers
 
 ## Security Considerations
 
@@ -189,8 +156,30 @@ This framework simulates attack techniques for benchmarking purposes only. Alway
 - Follow responsible disclosure processes if vulnerabilities are discovered
 - Ensure all testing complies with applicable laws and regulations
 
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Citation
+
+If you use this work in your research, please cite:
+
+```
+@article{khinvasara2025multiexpert,
+  title={Multi-Expert AI System for Sneaker Bot Detection},
+  author={Khinvasara, Arnav},
+  journal={arXiv preprint},
+  year={2025}
+}
+```
+
 ## Acknowledgments
 
-- MITRE ATT&CK® framework
-- Cloud security service providers
-- Security researchers who have developed similar methodologies
+* University of California, San Diego
+* MITRE ATT&CK® framework
+* Cloud security service providers
+* Security researchers who have developed similar methodologies
