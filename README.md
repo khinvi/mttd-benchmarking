@@ -28,9 +28,13 @@ Our meta-level analysis framework combines these components to provide objective
 
 ## Read More
 
-For detailed information about the framework architecture, methodology, and implementation, check our documentation:
+For a deeper understanding of the research motivations and methodology behind this implementation:
 
-📄 **Documentation:** [MTTD Benchmarking Framework Documentation](https://github.com/yourusername/mttd-benchmarking/docs/index.md)
+📄 **Research Paper Proposal:** [Beyond Vendor Claims: Empirical MTTD Benchmarking for Cloud Security Services](https://github.com/khinvi/mttd-benchmarking/blob/main/Research_Paper_Proposal__MTTD_Benchmarking_Framework.pdf)
+
+📄 **Documentation:** [MTTD Benchmarking Framework Documentation](https://github.com/khinvi/mttd-benchmarking/docs/index.md)
+
+This structure shows the progression from your initial research proposal to the implementation documentation, providing readers with both the theoretical foundation and practical details of your work.
 
 ## Research Applications
 
