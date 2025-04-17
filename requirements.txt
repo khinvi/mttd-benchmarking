@@ -1,0 +1,44 @@
+# Core dependencies
+python-dateutil>=2.8.2
+pyyaml>=6.0
+requests>=2.28.0
+jsonschema>=4.16.0
+
+# Cloud platform SDKs
+boto3>=1.26.0  # AWS SDK
+azure-identity>=1.12.0  # Azure authentication
+azure-mgmt-resource>=21.1.0  # Azure Resource Manager
+azure-mgmt-security>=3.0.0  # Azure Security Center
+azure-mgmt-monitor>=5.0.0  # Azure Monitor
+google-cloud-compute>=1.6.0  # GCP Compute
+google-cloud-securitycenter>=1.16.0  # GCP Security Command Center
+
+# Data processing
+pandas>=1.5.0
+numpy>=1.23.0
+
+# Visualization
+matplotlib>=3.6.0
+seaborn>=0.12.0
+
+# Web UI
+flask>=2.2.0
+flask-cors>=3.0.10
+
+# Testing
+pytest>=7.0.0
+pytest-cov>=3.0.0
+moto>=4.0.0  # AWS mocking
+
+# Development
+black>=22.10.0
+isort>=5.10.0
+flake8>=5.0.0
+mypy>=0.990
+
+# Documentation
+sphinx>=5.3.0
+sphinx-rtd-theme>=1.0.0
+
+# Logging and monitoring
+structlog>=22.1.0
