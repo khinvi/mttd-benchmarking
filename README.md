@@ -73,7 +73,7 @@ cd mttd-benchmarking
 pip install -e .
 ```
 
-For detailed installation instructions, see the [Installation Guide](installation.md).
+For detailed installation instructions, see the [Installation Guide](https://github.com/yourusername/mttd-benchmarking/docs/installation.md).
 
 ## Usage
 
