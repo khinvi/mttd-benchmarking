@@ -1,0 +1,203 @@
+{
+    "id": "aws-data-exfiltration-001",
+    "name": "AWS S3 Data Exfiltration Scenario",
+    "description": "Simulates an attacker accessing and exfiltrating sensitive data from S3 buckets",
+    "platform": {
+      "name": "aws",
+      "service_name": "aws_guardduty",
+      "region": "us-west-2"
+    },
+    "environment_config": {
+      "resources": {
+        "ec2_instance": [
+          {
+            "image_id": "ami-0c55b159cbfafe1f0",
+            "instance_type": "t2.micro"
+          }
+        ],
+        "s3_bucket": [
+          {
+            "public_access": false
+          },
+          {
+            "public_access": false,
+            "policy": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": "*"
+                  },
+                  "Action": "s3:GetObject",
+                  "Resource": "arn:aws:s3:::${bucket_name}/*",
+                  "Condition": {
+                    "IpAddress": {
+                      "aws:SourceIp": "10.0.0.0/8"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "iam_role": [
+          {
+            "assume_role_policy": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "ec2.amazonaws.com"
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            },
+            "managed_policies": [
+              "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+            ]
+          }
+        ]
+      }
+    },
+    "steps": [
+      {
+        "name": "Initial Access via Valid Credentials",
+        "technique_id": "T1078",
+        "description": "Attacker uses valid credentials to gain initial access to the environment",
+        "parameters": {
+          "user_name": "legitimate-aws-user",
+          "source_ip": "203.0.113.100"
+        },
+        "expected_indicators": [
+          "aws-api-call",
+          "unusual-api-call-location"
+        ]
+      },
+      {
+        "name": "Account Discovery",
+        "technique_id": "T1087",
+        "description": "Discover existing users and roles to identify potential targets",
+        "parameters": {
+          "source_ip": "203.0.113.100"
+        },
+        "expected_indicators": [
+          "aws-api-call",
+          "account-enumeration"
+        ]
+      },
+      {
+        "name": "S3 Bucket Discovery",
+        "technique_id": "T1083",
+        "description": "Discover S3 buckets with potentially sensitive data",
+        "parameters": {
+          "source_ip": "203.0.113.100"
+        },
+        "expected_indicators": [
+          "aws-api-call",
+          "s3-bucket-enumeration"
+        ]
+      },
+      {
+        "name": "S3 Object Discovery",
+        "technique_id": "T1083",
+        "description": "List objects in discovered S3 buckets",
+        "parameters": {
+          "bucket_name": "auto-generated",
+          "source_ip": "203.0.113.100"
+        },
+        "expected_indicators": [
+          "aws-api-call",
+          "s3-object-enumeration"
+        ]
+      },
+      {
+        "name": "Data from Cloud Storage",
+        "technique_id": "T1530",
+        "description": "Download sensitive data from S3 buckets",
+        "parameters": {
+          "bucket_name": "auto-generated",
+          "source_ip": "203.0.113.100"
+        },
+        "expected_indicators": [
+          "aws-api-call",
+          "s3-data-access",
+          "data-exfiltration"
+        ]
+      },
+      {
+        "name": "Transfer Data via Alternative Protocol",
+        "technique_id": "T1048",
+        "description": "Exfiltrate the downloaded data via DNS tunneling",
+        "parameters": {
+          "protocol": "dns",
+          "data_size": 250,
+          "destination_ip": "203.0.113.101",
+          "source_ip": "203.0.113.100"
+        },
+        "expected_indicators": [
+          "dns-exfiltration",
+          "unusual-network-traffic"
+        ]
+      },
+      {
+        "name": "Delete CloudTrail Logs",
+        "technique_id": "T1070.004",
+        "description": "Attempt to delete CloudTrail logs to cover tracks",
+        "parameters": {
+          "trail_name": "management-events",
+          "source_ip": "203.0.113.100"
+        },
+        "expected_indicators": [
+          "aws-api-call",
+          "defense-evasion",
+          "unusual-cloudtrail-activity"
+        ]
+      }
+    ],
+    "expected_alerts": [
+      {
+        "service": "aws_guardduty",
+        "finding_type": "UnauthorizedAccess:IAMUser/MaliciousIPCaller",
+        "severity": "MEDIUM",
+        "time_to_detect_range": [60, 300]
+      },
+      {
+        "service": "aws_guardduty",
+        "finding_type": "Discovery:S3/BucketEnumeration",
+        "severity": "LOW",
+        "time_to_detect_range": [60, 600]
+      },
+      {
+        "service": "aws_guardduty",
+        "finding_type": "Exfiltration:S3/ObjectRead",
+        "severity": "MEDIUM",
+        "time_to_detect_range": [30, 300]
+      },
+      {
+        "service": "aws_guardduty",
+        "finding_type": "Exfiltration:S3/MaliciousIPCaller",
+        "severity": "HIGH",
+        "time_to_detect_range": [30, 300]
+      },
+      {
+        "service": "aws_guardduty",
+        "finding_type": "DefenseEvasion:CloudTrail/LogsDeleted",
+        "severity": "HIGH",
+        "time_to_detect_range": [30, 180]
+      },
+      {
+        "service": "aws_securityhub",
+        "finding_type": "TTPs/Exfiltration/Exfiltration.Over.Alternative.Protocol",
+        "severity": "HIGH",
+        "time_to_detect_range": [60, 600]
+      },
+      {
+        "service": "aws_securityhub",
+        "finding_type": "TTPs/DefenseEvasion/Indicator.Removal.On.Host",
+        "severity": "HIGH",
+        "time_to_detect_range": [30, 300]
+      }
+    ]
+  }

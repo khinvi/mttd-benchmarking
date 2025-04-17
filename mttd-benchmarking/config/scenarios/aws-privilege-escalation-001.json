@@ -1,0 +1,167 @@
+{
+    "id": "aws-privilege-escalation-001",
+    "name": "AWS IAM Privilege Escalation Scenario",
+    "description": "Simulates an attacker gaining initial access and performing privilege escalation via IAM manipulation",
+    "platform": {
+      "name": "aws",
+      "service_name": "aws_guardduty",
+      "region": "us-west-2"
+    },
+    "environment_config": {
+      "resources": {
+        "ec2_instance": [
+          {
+            "image_id": "ami-0c55b159cbfafe1f0",
+            "instance_type": "t2.micro"
+          }
+        ],
+        "iam_user": [
+          {
+            "create_access_key": true
+          }
+        ],
+        "s3_bucket": [
+          {
+            "public_access": false
+          }
+        ]
+      }
+    },
+    "steps": [
+      {
+        "name": "Initial Access via Valid Credentials",
+        "technique_id": "T1078",
+        "description": "Attacker uses valid credentials to gain initial access to the environment",
+        "parameters": {
+          "user_name": "legitimate-aws-user",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "aws-api-call",
+          "unusual-api-call-location"
+        ]
+      },
+      {
+        "name": "Account Discovery",
+        "technique_id": "T1087",
+        "description": "Discover existing IAM users and roles to identify potential targets",
+        "parameters": {
+          "source_ip": "198.51.100.1",
+          "enumerate_users": true,
+          "enumerate_roles": true
+        },
+        "expected_indicators": [
+          "aws-api-call",
+          "account-enumeration"
+        ]
+      },
+      {
+        "name": "Create New IAM User",
+        "technique_id": "T1136",
+        "description": "Create a new IAM user for persistence",
+        "parameters": {
+          "user_name": "support-backup-svc",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "aws-api-call",
+          "iam-user-creation",
+          "unusual-iam-action"
+        ]
+      },
+      {
+        "name": "Attach Admin Policy",
+        "technique_id": "T1098",
+        "description": "Attach administrator policy to the newly created user",
+        "parameters": {
+          "user_name": "support-backup-svc",
+          "policy_arn": "arn:aws:iam::aws:policy/AdministratorAccess",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "aws-api-call",
+          "privilege-escalation",
+          "iam-policy-change"
+        ]
+      },
+      {
+        "name": "Create Access Key",
+        "technique_id": "T1098.001",
+        "description": "Create access key for the newly created user",
+        "parameters": {
+          "user_name": "support-backup-svc",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "aws-api-call",
+          "credential-access"
+        ]
+      },
+      {
+        "name": "Access Private S3 Bucket",
+        "technique_id": "T1530",
+        "description": "Access private S3 bucket with escalated privileges",
+        "parameters": {
+          "bucket_name": "auto-generated",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "aws-api-call",
+          "s3-data-access"
+        ]
+      },
+      {
+        "name": "Exfiltrate S3 Data",
+        "technique_id": "T1537",
+        "description": "Transfer data to an external account",
+        "parameters": {
+          "source_bucket": "auto-generated",
+          "destination_account": "external-attacker-account",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "aws-api-call",
+          "data-exfiltration",
+          "s3-data-access"
+        ]
+      }
+    ],
+    "expected_alerts": [
+      {
+        "service": "aws_guardduty",
+        "finding_type": "UnauthorizedAccess:IAMUser/MaliciousIPCaller",
+        "severity": "MEDIUM",
+        "time_to_detect_range": [60, 300]
+      },
+      {
+        "service": "aws_guardduty",
+        "finding_type": "Discovery:IAMUser/AnomalousBehavior",
+        "severity": "LOW",
+        "time_to_detect_range": [120, 600]
+      },
+      {
+        "service": "aws_guardduty",
+        "finding_type": "Persistence:IAMUser/UserPermissions",
+        "severity": "HIGH",
+        "time_to_detect_range": [30, 300]
+      },
+      {
+        "service": "aws_guardduty",
+        "finding_type": "PrivilegeEscalation:IAMUser/AdministrativePermissions",
+        "severity": "HIGH",
+        "time_to_detect_range": [30, 300]
+      },
+      {
+        "service": "aws_guardduty",
+        "finding_type": "CredentialAccess:IAMUser/AnomalousBehavior",
+        "severity": "MEDIUM",
+        "time_to_detect_range": [60, 300]
+      },
+      {
+        "service": "aws_guardduty",
+        "finding_type": "Exfiltration:S3/AnomalousBehavior",
+        "severity": "HIGH",
+        "time_to_detect_range": [60, 300]
+      }
+    ]
+  }

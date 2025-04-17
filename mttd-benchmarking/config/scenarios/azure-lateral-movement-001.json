@@ -1,0 +1,157 @@
+{
+    "id": "azure-lateral-movement-001",
+    "name": "Azure Lateral Movement Scenario",
+    "description": "Simulates an attacker gaining initial access and then moving laterally through Azure resources by exploiting identities and privileges",
+    "platform": {
+      "name": "azure",
+      "service_name": "azure_sentinel",
+      "region": "eastus"
+    },
+    "environment_config": {
+      "resources": {
+        "virtual_machine": [
+          {
+            "os_type": "Linux",
+            "vm_size": "Standard_B1s",
+            "admin_username": "azureuser"
+          }
+        ],
+        "storage_account": [
+          {
+            "kind": "StorageV2",
+            "sku_name": "Standard_LRS"
+          }
+        ],
+        "managed_identity": [
+          {
+            "type": "UserAssigned"
+          }
+        ]
+      }
+    },
+    "steps": [
+      {
+        "name": "Initial Access via Valid Credentials",
+        "technique_id": "T1078",
+        "description": "Attacker uses valid credentials to gain initial access to the environment",
+        "parameters": {
+          "user_name": "legitimate-azure-user",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "azure-api-call",
+          "unusual-api-call-location"
+        ]
+      },
+      {
+        "name": "Account Discovery",
+        "technique_id": "T1087",
+        "description": "Enumerates users, groups, and roles to identify potential targets",
+        "parameters": {
+          "source_ip": "198.51.100.1",
+          "enumerate_users": true,
+          "enumerate_roles": true
+        },
+        "expected_indicators": [
+          "azure-api-call",
+          "account-enumeration"
+        ]
+      },
+      {
+        "name": "Create New User Account",
+        "technique_id": "T1136",
+        "description": "Creates a new user account for persistence",
+        "parameters": {
+          "user_name": "maintenance-service-account",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "azure-api-call",
+          "azure-user-creation",
+          "unusual-user-activity"
+        ]
+      },
+      {
+        "name": "Privilege Escalation",
+        "technique_id": "T1098",
+        "description": "Elevates privileges by assigning administrative role to the new account",
+        "parameters": {
+          "user_name": "maintenance-service-account",
+          "role_name": "Owner",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "azure-api-call",
+          "privilege-escalation",
+          "role-assignment-change"
+        ]
+      },
+      {
+        "name": "Steal Application Access Token",
+        "technique_id": "T1528",
+        "description": "Steals access tokens from an Azure application to access additional resources",
+        "parameters": {
+          "app_name": "azure-app-service",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "azure-api-call",
+          "token-access",
+          "unusual-app-activity"
+        ]
+      },
+      {
+        "name": "Data Exfiltration to External Account",
+        "technique_id": "T1537",
+        "description": "Transfers data to an external storage account",
+        "parameters": {
+          "source_account": "compromised-storage",
+          "destination_account": "external-attacker-storage",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "azure-api-call",
+          "data-exfiltration",
+          "unusual-storage-activity"
+        ]
+      }
+    ],
+    "expected_alerts": [
+      {
+        "service": "azure_sentinel",
+        "finding_type": "Suspicious sign-in activity",
+        "severity": "MEDIUM",
+        "time_to_detect_range": [60, 300]
+      },
+      {
+        "service": "azure_sentinel",
+        "finding_type": "User enumeration activity",
+        "severity": "LOW",
+        "time_to_detect_range": [120, 600]
+      },
+      {
+        "service": "azure_sentinel",
+        "finding_type": "New user creation",
+        "severity": "MEDIUM",
+        "time_to_detect_range": [60, 300]
+      },
+      {
+        "service": "azure_sentinel",
+        "finding_type": "Privileged role assignment",
+        "severity": "HIGH",
+        "time_to_detect_range": [30, 300]
+      },
+      {
+        "service": "azure_sentinel",
+        "finding_type": "Application token theft",
+        "severity": "HIGH",
+        "time_to_detect_range": [60, 600]
+      },
+      {
+        "service": "azure_sentinel",
+        "finding_type": "Data exfiltration to storage account",
+        "severity": "CRITICAL",
+        "time_to_detect_range": [30, 300]
+      }
+    ]
+  }

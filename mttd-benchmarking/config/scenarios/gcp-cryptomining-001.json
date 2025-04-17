@@ -1,0 +1,170 @@
+{
+    "id": "gcp-cryptomining-001",
+    "name": "GCP Cryptomining Attack Scenario",
+    "description": "Simulates an attacker compromising GCP resources to deploy cryptomining workloads",
+    "platform": {
+      "name": "gcp",
+      "service_name": "gcp_security_command",
+      "region": "us-central1"
+    },
+    "environment_config": {
+      "resources": {
+        "compute_instance": [
+          {
+            "machine_type": "e2-medium",
+            "image_family": "debian-11"
+          }
+        ],
+        "storage_bucket": [
+          {
+            "storage_class": "STANDARD"
+          }
+        ],
+        "iam_service_account": [
+          {
+            "display_name": "MTTD Test Service Account"
+          }
+        ]
+      }
+    },
+    "steps": [
+      {
+        "name": "Initial Access via Valid Credentials",
+        "technique_id": "T1078",
+        "description": "Attacker uses valid credentials to gain initial access to the environment",
+        "parameters": {
+          "user_name": "legitimate-gcp-user",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "gcp-api-call",
+          "unusual-api-call-location"
+        ]
+      },
+      {
+        "name": "Account Discovery",
+        "technique_id": "T1087",
+        "description": "Discover existing service accounts to identify potential targets",
+        "parameters": {
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "gcp-api-call",
+          "account-enumeration"
+        ]
+      },
+      {
+        "name": "Create Service Account",
+        "technique_id": "T1136",
+        "description": "Create a new service account for persistence",
+        "parameters": {
+          "account_name": "crypto-worker-sa",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "gcp-api-call",
+          "account-creation",
+          "unusual-activity"
+        ]
+      },
+      {
+        "name": "Service Account Manipulation",
+        "technique_id": "T1098",
+        "description": "Assign elevated privileges to the service account",
+        "parameters": {
+          "account_name": "crypto-worker-sa",
+          "role": "roles/compute.admin",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "gcp-api-call",
+          "privilege-escalation",
+          "policy-change"
+        ]
+      },
+      {
+        "name": "Upload Mining Container Image",
+        "technique_id": "T1525",
+        "description": "Upload a container image containing cryptomining software",
+        "parameters": {
+          "repository": "gcr.io/mttd-project/images",
+          "image": "ml-training-app",
+          "tag": "latest",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "gcp-api-call",
+          "malicious-image",
+          "unusual-activity"
+        ]
+      },
+      {
+        "name": "Deploy Cryptomining Workload",
+        "technique_id": "T1496",
+        "description": "Deploy compute resources with the mining container",
+        "parameters": {
+          "machine_type": "n2-highcpu-32",
+          "instance_count": 5,
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "gcp-api-call",
+          "resource-consumption",
+          "unusual-compute-usage"
+        ]
+      },
+      {
+        "name": "Exfiltrate Mining Profits",
+        "technique_id": "T1537",
+        "description": "Transfer cryptomining profits to external storage",
+        "parameters": {
+          "source_bucket": "mttd-source-bucket",
+          "destination_bucket": "external-crypto-wallet-configs",
+          "source_ip": "198.51.100.1"
+        },
+        "expected_indicators": [
+          "gcp-api-call",
+          "data-exfiltration",
+          "unusual-storage-activity"
+        ]
+      }
+    ],
+    "expected_alerts": [
+      {
+        "service": "gcp_security_command",
+        "finding_type": "IAM_ABNORMAL_GRANT",
+        "severity": "MEDIUM",
+        "time_to_detect_range": [60, 300]
+      },
+      {
+        "service": "gcp_security_command",
+        "finding_type": "IAM_ANOMALOUS_ACCOUNT_CREATION",
+        "severity": "MEDIUM",
+        "time_to_detect_range": [30, 300]
+      },
+      {
+        "service": "gcp_security_command",
+        "finding_type": "IAM_PRIVILEGED_ACCESS_GRANT",
+        "severity": "HIGH",
+        "time_to_detect_range": [30, 300]
+      },
+      {
+        "service": "gcp_security_command",
+        "finding_type": "CONTAINER_SUSPICIOUS_IMAGE_PUSH",
+        "severity": "HIGH",
+        "time_to_detect_range": [60, 600]
+      },
+      {
+        "service": "gcp_security_command",
+        "finding_type": "ANOMALOUS_COMPUTE_USAGE",
+        "severity": "CRITICAL",
+        "time_to_detect_range": [60, 1800]
+      },
+      {
+        "service": "gcp_security_command",
+        "finding_type": "STORAGE_EXFILTRATION",
+        "severity": "HIGH",
+        "time_to_detect_range": [60, 600]
+      }
+    ]
+  }
