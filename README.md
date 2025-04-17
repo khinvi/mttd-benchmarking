@@ -30,7 +30,7 @@ Our meta-level analysis framework combines these components to provide objective
 
 For a deeper understanding of the research motivations and methodology behind this implementation:
 
-📄 **Research Paper Proposal:** [Beyond Vendor Claims: Empirical MTTD Benchmarking for Cloud Security Services](https://github.com/khinvi/mttd-benchmarking/blob/main/Research_Paper_Proposal__MTTD_Benchmarking_Framework.pdf)
+📄 **Research Paper Proposal:** [Using Empirical MTTD Benchmarking for Cloud Security Services to Go Beyond Vendor Claims](https://github.com/khinvi/mttd-benchmarking/blob/main/Research_Paper_Proposal__MTTD_Benchmarking_Framework.pdf)
 
 📄 **Documentation:** [MTTD Benchmarking Framework Documentation](https://github.com/khinvi/mttd-benchmarking/docs/index.md)
 
