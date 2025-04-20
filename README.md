@@ -1,5 +1,7 @@
 # MTTD Benchmarking Framework 🔍
 
+![Status](https://img.shields.io/badge/status-research_in_progress-yellow.svg)
+
 *A research-oriented framework for standardized measurement and comparison of Mean Time to Detect (MTTD) across commercial cloud security services.* ☁️
 
 ## Overview
