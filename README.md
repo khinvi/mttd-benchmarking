@@ -17,7 +17,7 @@ Our framework provides:
 
 This repository contains our implementation, documentation, and research findings as we continue to develop and refine this methodology. We'll update it as our research progresses! 🚀
 
-The MTTD Benchmarking Framework employs a modular architecture to systematically evaluate security service detection capabilities:
+The MTTD Benchmarking Framework employs a modular architecture to systematically evaluate security service detection capabilities using 6 key components:
 
 - **Threat Simulation Engine**: Executes controlled attack scenarios across platforms
 - **Detection Monitoring System**: Collects security events from various services
@@ -26,7 +26,7 @@ The MTTD Benchmarking Framework employs a modular architecture to systematically
 - **Test Scenario Manager**: Orchestrates test execution and manages environments
 - **Service Integration Layer**: Provides standardized interfaces to various security services
 
-Our meta-level analysis framework combines these components to provide objective comparisons while adapting to the unique characteristics of each security service.
+Through the meta-level analysis framework that combines these components, we are able to provide objective comparisons while adequately adapting to the unique characteristics of each security service.
 
 ## Read More
 
@@ -34,13 +34,9 @@ For a deeper understanding of the research motivations and methodology behind th
 
 📄 **Research Paper Proposal:** [Using Empirical MTTD Benchmarking for Cloud Security Services to Go Beyond Vendor Claims](https://github.com/khinvi/mttd-benchmarking/blob/main/Research_Paper_Proposal__MTTD_Benchmarking_Framework.pdf)
 
-📄 **Documentation:** [MTTD Benchmarking Framework Documentation](https://github.com/khinvi/mttd-benchmarking/docs/index.md)
+📄 **Documentation:** [MTTD Benchmarking Framework Documentation](https://github.com/khinvi/mttd-benchmarking/docs)
 
-This structure shows the progression from your initial research proposal to the implementation documentation, providing readers with both the theoretical foundation and practical details of your work.
-
-## Research Applications
-
-This framework enables several important cybersecurity research directions:
+## Applications
 
 1. Establishing empirical baselines for MTTD across different providers
 2. Identifying detection blind spots in cloud security services
@@ -62,7 +58,6 @@ This framework enables several important cybersecurity research directions:
 
 ### Prerequisites
 
-- Python 3.9 or higher
 - Access to cloud platform accounts (AWS, Azure, and/or GCP)
 - Cloud security services to test (GuardDuty, Security Hub, Sentinel, etc.)
 - Appropriate permissions to create and manage cloud resources
@@ -145,7 +140,7 @@ mttd-benchmarking/
 
 ## Extending the Framework
 
-The framework is designed to be extensible in several ways:
+In the future, we can enhance the framework and design it to be extensible in several ways:
 
 1. **Add New Attack Techniques**: Implement new MITRE ATT&CK techniques in the appropriate platform modules
 2. **Support New Security Services**: Create new security service clients in the services directory
@@ -187,5 +182,3 @@ If you use this work in your research, please cite:
 
 * University of California, San Diego
 * MITRE ATT&CK® framework
-* Cloud security service providers
-* Security researchers who have developed similar methodologies
