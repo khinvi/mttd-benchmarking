@@ -6,7 +6,7 @@
 
 ## Overview
 
-The **MTTD Benchmarking Framework** addresses a critical gap in cloud security: the **lack of standardized methods** to objectively evaluate and compare detection capabilities across security services. When organizations migrate to the cloud, they need empirical data to make informed security decisions, but consistent benchmarking methodologies have been missing—until now.
+The **MTTD Benchmarking Framework** addresses a critical gap in cloud security: the **lack of standardized methods** to objectively evaluate and compare detection capabilities across security services. In order to market their services effectively, many CSP's build their own metric to showcase their product as being the most effective, however, this is disingenuous. When organizations migrate to the cloud, they need empirical data to make informed security decisions, but consistent benchmarking methodologies have been missing—until now. 
 
 Our framework provides:
 
